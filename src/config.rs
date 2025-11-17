@@ -473,6 +473,25 @@ impl Config2 {
             decrypt_str_or_original(&config.unlock_pin, PASSWORD_ENC_VERSION);
         config.unlock_pin = unlock_pin;
         store |= store2;
+        
+        // Set custom default values for options
+        // Only set if the option is not already explicitly configured
+        if !config.options.contains_key(keys::OPTION_ENABLE_LAN_DISCOVERY) {
+            config.options.insert(keys::OPTION_ENABLE_LAN_DISCOVERY.to_string(), "N".to_string());
+        }
+        if !config.options.contains_key(keys::OPTION_ALLOW_REMOTE_CONFIG_MODIFICATION) {
+            config.options.insert(keys::OPTION_ALLOW_REMOTE_CONFIG_MODIFICATION.to_string(), "Y".to_string());
+        }
+        if !config.options.contains_key(keys::OPTION_ALLOW_REMOTE_CM_MODIFICATION) {
+            config.options.insert(keys::OPTION_ALLOW_REMOTE_CM_MODIFICATION.to_string(), "Y".to_string());
+        }
+        if !config.options.contains_key(keys::OPTION_ENABLE_CHECK_UPDATE) {
+            config.options.insert(keys::OPTION_ENABLE_CHECK_UPDATE.to_string(), "N".to_string());
+        }
+        if !config.options.contains_key(keys::OPTION_ENABLE_UDP_PUNCH) {
+            config.options.insert(keys::OPTION_ENABLE_UDP_PUNCH.to_string(), "Y".to_string());
+        }
+        
         if store {
             config.store();
         }
@@ -1752,7 +1771,15 @@ pub struct LocalConfig {
 
 impl LocalConfig {
     fn load() -> LocalConfig {
-        Config::load_::<LocalConfig>("_local")
+        let mut config = Config::load_::<LocalConfig>("_local");
+        
+        // Set custom default values for local options
+        // Only set if the option is not already explicitly configured
+        if !config.options.contains_key(keys::OPTION_THEME) {
+            config.options.insert(keys::OPTION_THEME.to_string(), "dark".to_string());
+        }
+        
+        config
     }
 
     fn store(&self) {
