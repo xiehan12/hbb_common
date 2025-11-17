@@ -80,8 +80,11 @@ pub fn approve_mode() -> ApproveMode {
         ApproveMode::Password
     } else if mode == "click" {
         ApproveMode::Click
-    } else {
+    } else if mode == "both" {
         ApproveMode::Both
+    } else {
+        // 默认使用密码模式，不显示连接提示窗口
+        ApproveMode::Password
     }
 }
 
