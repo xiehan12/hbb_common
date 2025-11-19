@@ -179,10 +179,9 @@ pub enum NetworkType {
 pub struct Config {
     #[serde(
         default,
-        skip_serializing_if = "String::is_empty",
         deserialize_with = "deserialize_string"
     )]
-    pub id: String, // use
+    pub id: String, // use (明文保存，便于第三方程序读取)
     #[serde(default, deserialize_with = "deserialize_string")]
     enc_id: String, // store
     #[serde(default, deserialize_with = "deserialize_string")]
@@ -631,7 +630,8 @@ impl Config {
         config.password =
             encrypt_str_or_original(&config.password, PASSWORD_ENC_VERSION, ENCRYPT_MAX_LEN);
         config.enc_id = encrypt_str_or_original(&config.id, PASSWORD_ENC_VERSION, ENCRYPT_MAX_LEN);
-        config.id = "".to_owned();
+        // 保留明文 ID，不清空（便于第三方程序读取）
+        // config.id = "".to_owned();
         Config::store_(&config, "");
     }
 
